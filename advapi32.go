@@ -51,17 +51,31 @@ const (
 
 )
 
+const (
+	REG_OPTION_BACKUP_RESTORE = 0x00000004
+	REG_OPTION_CREATE_LINK    = 0x00000002
+	REG_OPTION_NON_VOLATILE   = 0x00000000
+	REG_OPTION_VOLATILE       = 0x00000001
+)
+
 var (
 	// Library
 	libadvapi32 uintptr
 
 	// Functions
 	regCloseKey     uintptr
+	regCreateKeyEx  uintptr
 	regOpenKeyEx    uintptr
 	regQueryValueEx uintptr
 	regEnumValue    uintptr
 	regSetValueEx   uintptr
 )
+
+type SECURITY_ATTRIBUTES struct {
+	nLength              uint32
+	lpSecurityDescriptor uintptr
+	bInheritHandle       bool
+}
 
 func init() {
 	// Library
@@ -69,6 +83,7 @@ func init() {
 
 	// Functions
 	regCloseKey = MustGetProcAddress(libadvapi32, "RegCloseKey")
+	regCreateKeyEx = MustGetProcAddress(libadvapi32, "RegCreateKeyExW")
 	regOpenKeyEx = MustGetProcAddress(libadvapi32, "RegOpenKeyExW")
 	regQueryValueEx = MustGetProcAddress(libadvapi32, "RegQueryValueExW")
 	regEnumValue = MustGetProcAddress(libadvapi32, "RegEnumValueW")
@@ -80,6 +95,21 @@ func RegCloseKey(hKey HKEY) int32 {
 		uintptr(hKey),
 		0,
 		0)
+
+	return int32(ret)
+}
+
+func RegCreateKeyEx(hKey HKEY, lpSubKey *uint16, Reserved uint32, lpClass *uint16, dwOptions uint32, samDesired REGSAM, lpSecurityAttributes *SECURITY_ATTRIBUTES, phkResult *HKEY, lpdwDisposition *uint32) int32 {
+	ret, _, _ := syscall.Syscall9(regCreateKeyEx, 9,
+		uintptr(hKey),
+		uintptr(unsafe.Pointer(lpSubKey)),
+		uintptr(Reserved),
+		uintptr(unsafe.Pointer(lpClass)),
+		uintptr(dwOptions),
+		uintptr(samDesired),
+		uintptr(unsafe.Pointer(lpSecurityAttributes)),
+		uintptr(unsafe.Pointer(phkResult)),
+		uintptr(unsafe.Pointer(lpdwDisposition)))
 
 	return int32(ret)
 }
