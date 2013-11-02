@@ -1530,6 +1530,7 @@ var (
 	translateMessage           uintptr
 	updateWindow               uintptr
 	windowFromPoint            uintptr
+	getClassName               uintptr
 )
 
 func init() {
@@ -1653,6 +1654,7 @@ func init() {
 	translateMessage = MustGetProcAddress(libuser32, "TranslateMessage")
 	updateWindow = MustGetProcAddress(libuser32, "UpdateWindow")
 	windowFromPoint = MustGetProcAddress(libuser32, "WindowFromPoint")
+	getClassName = MustGetProcAddress(libuser32, "GetClassNameW")
 }
 
 func AdjustWindowRect(lpRect *RECT, dwStyle uint32, bMenu bool) bool {
@@ -1692,6 +1694,20 @@ func CallWindowProc(lpPrevWndFunc uintptr, hWnd HWND, Msg uint32, wParam, lParam
 		0)
 
 	return ret
+}
+
+
+func GetClassName(hWnd HWND) string {
+
+	buf := new([1024]uint16)
+
+	ret, _, _ := syscall.Syscall(getClassName, 3,
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&buf[0])),
+		1024)
+
+	return syscall.UTF16ToString(buf[0:ret])
+
 }
 
 func ClientToScreen(hwnd HWND, lpPoint *POINT) bool {
