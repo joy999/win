@@ -1531,6 +1531,8 @@ var (
 	updateWindow               uintptr
 	windowFromPoint            uintptr
 	getClassName               uintptr
+	getWindowText              uintptr
+	findWindowEx               uintptr
 )
 
 func init() {
@@ -1655,6 +1657,8 @@ func init() {
 	updateWindow = MustGetProcAddress(libuser32, "UpdateWindow")
 	windowFromPoint = MustGetProcAddress(libuser32, "WindowFromPoint")
 	getClassName = MustGetProcAddress(libuser32, "GetClassNameW")
+	getWindowText = MustGetProcAddress(libuser32, "GetWindowTextW")
+	findWindowEx = MustGetProcAddress(libuser32, "FindWindowExW")
 }
 
 func AdjustWindowRect(lpRect *RECT, dwStyle uint32, bMenu bool) bool {
@@ -1696,18 +1700,40 @@ func CallWindowProc(lpPrevWndFunc uintptr, hWnd HWND, Msg uint32, wParam, lParam
 	return ret
 }
 
-
 func GetClassName(hWnd HWND) string {
 
-	buf := new([1024]uint16)
+	buf := new([4096]uint16)
 
 	ret, _, _ := syscall.Syscall(getClassName, 3,
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(&buf[0])),
-		1024)
+		4096)
 
 	return syscall.UTF16ToString(buf[0:ret])
 
+}
+
+func GetWindowText(hWnd HWND) string {
+
+	buf := new([4096]uint16)
+
+	ret, _, _ := syscall.Syscall(getWindowText, 3,
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(&buf[0])),
+		4096)
+
+	return syscall.UTF16ToString(buf[0:ret])
+}
+
+func FindWindowEx(hWndParent HWND, hWndChildAfter HWND, lpszClass uintptr, lpszWindow uintptr) HWND {
+	ret, _, _ := syscall.Syscall6(findWindowEx, 4,
+		uintptr(hWndParent),
+		uintptr(hWndChildAfter),
+		lpszClass,
+		lpszWindow,
+		0, 0)
+
+	return HWND(ret)
 }
 
 func ClientToScreen(hwnd HWND, lpPoint *POINT) bool {
