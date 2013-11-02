@@ -1700,29 +1700,42 @@ func CallWindowProc(lpPrevWndFunc uintptr, hWnd HWND, Msg uint32, wParam, lParam
 	return ret
 }
 
-func GetClassName(hWnd HWND) string {
+func GetClassName(hWnd HWND, buff *uint16, buff_size int) int {
 
-	buf := new([4096]uint16)
+	//buf := new([4096]uint16)
+
+	//ret, _, _ := syscall.Syscall(getClassName, 3,
+	//	uintptr(hWnd),
+	//	uintptr(unsafe.Pointer(&buf[0])),
+	//	4096)
+
+	//return syscall.UTF16ToString(buf[0:ret])
 
 	ret, _, _ := syscall.Syscall(getClassName, 3,
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(&buf[0])),
-		4096)
+		uintptr(unsafe.Pointer(buff)),
+		uintptr(buff_size))
 
-	return syscall.UTF16ToString(buf[0:ret])
-
+	return int(ret)
 }
 
-func GetWindowText(hWnd HWND) string {
+func GetWindowText(hWnd HWND, buff *uint16, buff_size int) int {
 
-	buf := new([4096]uint16)
+	//buf := new([4096]uint16)
+
+	//ret, _, _ := syscall.Syscall(getWindowText, 3,
+	//	uintptr(hWnd),
+	//	uintptr(unsafe.Pointer(&buf[0])),
+	//	4096)
+
+	//return syscall.UTF16ToString(buf[0:ret])
 
 	ret, _, _ := syscall.Syscall(getWindowText, 3,
 		uintptr(hWnd),
-		uintptr(unsafe.Pointer(&buf[0])),
-		4096)
+		uintptr(unsafe.Pointer(buff)),
+		uintptr(buff_size))
 
-	return syscall.UTF16ToString(buf[0:ret])
+	return int(ret)
 }
 
 func FindWindowEx(hWndParent HWND, hWndChildAfter HWND, lpszClass uintptr, lpszWindow uintptr) HWND {
