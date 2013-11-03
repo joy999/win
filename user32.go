@@ -1534,6 +1534,7 @@ var (
 	getWindowText              uintptr
 	findWindowEx               uintptr
 	keybdEvent                 uintptr
+	mapVirtualKey              uintptr
 )
 
 func init() {
@@ -1662,6 +1663,7 @@ func init() {
 	getWindowText = MustGetProcAddress(libuser32, "GetWindowTextW")
 	findWindowEx = MustGetProcAddress(libuser32, "FindWindowExW")
 	keybdEvent = MustGetProcAddress(libuser32, "keybd_event")
+	mapVirtualKey = MustGetProcAddress(libuser32, "MapVirtualKeyW")
 }
 
 func AdjustWindowRect(lpRect *RECT, dwStyle uint32, bMenu bool) bool {
@@ -2324,6 +2326,15 @@ func LoadString(instRes HINSTANCE, id uint32, buf *uint16, length int32) int32 {
 		0)
 
 	return int32(ret)
+}
+
+func MapVirtualKey(uCode, uMapType uint) uint {
+	ret, _, _ := syscall.Syscall(mapVirtualKey, 2,
+		uintptr(uCode),
+		uintptr(uMapType),
+		0)
+
+	return uint(ret)
 }
 
 // Plays a waveform sound. uType is the sound to be played. The sounds are set by the user through the Sound control panel application.
