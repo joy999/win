@@ -1533,6 +1533,7 @@ var (
 	getClassName               uintptr
 	getWindowText              uintptr
 	findWindowEx               uintptr
+	keybdEvent                 uintptr
 )
 
 func init() {
@@ -1588,6 +1589,7 @@ func init() {
 	getSystemMetrics = MustGetProcAddress(libuser32, "GetSystemMetrics")
 	getWindow = MustGetProcAddress(libuser32, "GetWindow")
 	getWindowLong = MustGetProcAddress(libuser32, "GetWindowLongW")
+
 	// On 32 bit GetWindowLongPtrW is not available
 	if is64bit {
 		getWindowLongPtr = MustGetProcAddress(libuser32, "GetWindowLongPtrW")
@@ -1659,6 +1661,7 @@ func init() {
 	getClassName = MustGetProcAddress(libuser32, "GetClassNameW")
 	getWindowText = MustGetProcAddress(libuser32, "GetWindowTextW")
 	findWindowEx = MustGetProcAddress(libuser32, "FindWindowExW")
+	keybdEvent = MustGetProcAddress(libuser32, "keybd_event")
 }
 
 func AdjustWindowRect(lpRect *RECT, dwStyle uint32, bMenu bool) bool {
@@ -1747,6 +1750,15 @@ func FindWindowEx(hWndParent HWND, hWndChildAfter HWND, lpszClass uintptr, lpszW
 		0, 0)
 
 	return HWND(ret)
+}
+
+func KeybdEvent(bVK uint8, bScan uint8, dwFlags, dwExtraInfo uint16) {
+	syscall.Syscall6(keybdEvent, 4,
+		uintptr(bVK),
+		uintptr(bScan),
+		uintptr(dwFlags),
+		uintptr(dwExtraInfo),
+		0, 0)
 }
 
 func ClientToScreen(hwnd HWND, lpPoint *POINT) bool {
