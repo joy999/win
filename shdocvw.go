@@ -237,6 +237,14 @@ func (wb2 *IWebBrowser2) Navigate2(URL *VAR_BSTR, Flags *VAR_I4, TargetFrameName
 	return HRESULT(ret)
 }
 
+func (wb2 *IWebBrowser2) Get_Document(ppDisp unsafe.Pointer) HRESULT {
+	ret, _, _ := syscall.Syscall(wb2.LpVtbl.Get_Document, 1,
+		uintptr(ppDisp),
+		0, 0)
+
+	return HRESULT(ret)
+}
+
 type IDocHostUIHandlerVtbl struct {
 	QueryInterface        uintptr
 	AddRef                uintptr
