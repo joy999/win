@@ -238,9 +238,10 @@ func (wb2 *IWebBrowser2) Navigate2(URL *VAR_BSTR, Flags *VAR_I4, TargetFrameName
 }
 
 func (wb2 *IWebBrowser2) Get_Document(ppDisp unsafe.Pointer) HRESULT {
-	ret, _, _ := syscall.Syscall(wb2.LpVtbl.Get_Document, 1,
+	ret, _, _ := syscall.Syscall(wb2.LpVtbl.Get_Document, 2,
+		uintptr(unsafe.Pointer(wb2)),
 		uintptr(ppDisp),
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }
@@ -307,18 +308,21 @@ type IHTMLDocument2 struct {
 	LpVtbl *IHTMLDocument2Vtbl
 }
 
-func (this *IHTMLDocument2) GetAll(collection **IHTMLElementCollection) HRESULT {
+func (this *IHTMLDocument2) GetAll(collection *IHTMLElementCollection) HRESULT {
+	pp := &(collection.LpVtbl)
 	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_all, 1,
-		uintptr(unsafe.Pointer(collection)),
+		uintptr(unsafe.Pointer(pp)),
 		0, 0)
 
 	return HRESULT(ret)
 }
 
-func (this *IHTMLDocument2) GetBody(p **IHTMLElement) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_all, 1,
-		uintptr(unsafe.Pointer(p)),
-		0, 0)
+func (this *IHTMLDocument2) GetBody(p *IHTMLElement) HRESULT {
+	pp := &(p.LpVtbl)
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_body, 2,
+		uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(pp)),
+		0)
 
 	return HRESULT(ret)
 }
@@ -335,34 +339,37 @@ type IHTMLElementCollection struct {
 }
 
 func (this *IHTMLElementCollection) Get_length(p uintptr) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_length, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_length, 2,
+		uintptr(unsafe.Pointer(this)),
 		p,
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }
 
 func (this *IHTMLElementCollection) Put_length(v uintptr) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_length, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_length, 2,
+		uintptr(unsafe.Pointer(this)),
 		v,
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }
 
 func (this *IHTMLElementCollection) Item(name *VARIANT, index *VARIANT) uintptr {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Item, 2,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Item, 3,
+		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(name)),
-		uintptr(unsafe.Pointer(index)),
-		0)
+		uintptr(unsafe.Pointer(index)))
 
 	return uintptr(ret)
 }
 
 func (this *IHTMLElementCollection) Tags(v *VARIANT) uintptr {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Tags, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Tags, 2,
+		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(v)),
-		0, 0)
+		0)
 
 	return uintptr(ret)
 }
@@ -381,49 +388,55 @@ type IHTMLElement struct {
 }
 
 func (this *IHTMLElement) Get_innerHTML(c **uint16 /*BSTR*/) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_innerHTML, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_innerHTML, 2,
+		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(c)),
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }
 
 func (this *IHTMLElement) Put_innerHTML(c *uint16 /*BSTR*/) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_innerHTML, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_innerHTML, 2,
+		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(c)),
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }
 
 func (this *IHTMLElement) Get_innerText(c **uint16 /*BSTR*/) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_innerText, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_innerText, 2,
+		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(c)),
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }
 
 func (this *IHTMLElement) Put_innerText(c *uint16 /*BSTR*/) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_innerText, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_innerText, 2,
+		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(c)),
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }
 
 func (this *IHTMLElement) Get_outerText(c **uint16 /*BSTR*/) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_outerText, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_outerText, 2,
+		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(c)),
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }
 
 func (this *IHTMLElement) Put_outerText(c *uint16 /*BSTR*/) HRESULT {
-	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_outerText, 1,
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_outerText, 2,
+		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(c)),
-		0, 0)
+		0)
 
 	return HRESULT(ret)
 }

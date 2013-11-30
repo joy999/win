@@ -1535,6 +1535,7 @@ var (
 	findWindowEx               uintptr
 	keybdEvent                 uintptr
 	mapVirtualKey              uintptr
+	switchToThisWindow         uintptr
 )
 
 func init() {
@@ -1664,6 +1665,7 @@ func init() {
 	findWindowEx = MustGetProcAddress(libuser32, "FindWindowExW")
 	keybdEvent = MustGetProcAddress(libuser32, "keybd_event")
 	mapVirtualKey = MustGetProcAddress(libuser32, "MapVirtualKeyW")
+	switchToThisWindow = MustGetProcAddress(libuser32, "SwitchToThisWindow")
 }
 
 func AdjustWindowRect(lpRect *RECT, dwStyle uint32, bMenu bool) bool {
@@ -2763,4 +2765,17 @@ func WindowFromPoint(Point POINT) HWND {
 		0)
 
 	return HWND(ret)
+}
+
+func SwitchToThisWindow(hwnd HWND, fAltTab bool) {
+	var v uintptr
+	if fAltTab {
+		v = 1
+	} else {
+		v = 0
+	}
+	_, _, _ = syscall.Syscall(switchToThisWindow, 2,
+		uintptr(hwnd),
+		v,
+		0)
 }
