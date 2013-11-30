@@ -277,3 +277,153 @@ type DOCHOSTUIINFO struct {
 	PchHostCss    *uint16
 	PchHostNS     *uint16
 }
+
+type IHTMLDocument2Vtbl struct {
+	ExecCommand           uintptr
+	ExecCommandShowHelp   uintptr
+	QueryCommandEnabled   uintptr
+	QueryCommandIndeterm  uintptr
+	QueryCommandState     uintptr
+	QueryCommandSupported uintptr
+	QueryCommandValue     uintptr
+	ToString              uintptr
+	Clear                 uintptr
+	Close                 uintptr
+	CreateElement         uintptr
+	CreateStyleSheet      uintptr
+	ElementFromPoint      uintptr
+	Write                 uintptr
+	Writeln               uintptr
+	//Properties
+	Get_mimeType uintptr
+	Get_all      uintptr
+	Get_anchors  uintptr
+	Get_applets  uintptr
+	Get_body     uintptr
+	Get_links    uintptr
+}
+
+type IHTMLDocument2 struct {
+	LpVtbl *IHTMLDocument2Vtbl
+}
+
+func (this *IHTMLDocument2) GetAll(collection **IHTMLElementCollection) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_all, 1,
+		uintptr(unsafe.Pointer(collection)),
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+func (this *IHTMLDocument2) GetBody(p **IHTMLElement) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_all, 1,
+		uintptr(unsafe.Pointer(p)),
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+type IHTMLElementCollectionVtbl struct {
+	Get_length uintptr
+	Put_length uintptr
+	Tags       uintptr
+	Item       uintptr
+}
+
+type IHTMLElementCollection struct {
+	LpVtbl *IHTMLElementCollectionVtbl
+}
+
+func (this *IHTMLElementCollection) Get_length(p uintptr) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_length, 1,
+		p,
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+func (this *IHTMLElementCollection) Put_length(v uintptr) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_length, 1,
+		v,
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+func (this *IHTMLElementCollection) Item(name *VARIANT, index *VARIANT) uintptr {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Item, 2,
+		uintptr(unsafe.Pointer(name)),
+		uintptr(unsafe.Pointer(index)),
+		0)
+
+	return uintptr(ret)
+}
+
+func (this *IHTMLElementCollection) Tags(v *VARIANT) uintptr {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Tags, 1,
+		uintptr(unsafe.Pointer(v)),
+		0, 0)
+
+	return uintptr(ret)
+}
+
+type IHTMLElementVtbl struct {
+	Get_innerHTML uintptr
+	Put_innerHTML uintptr
+	Get_innerText uintptr
+	Put_innerText uintptr
+	Get_outerText uintptr
+	Put_outerText uintptr
+}
+
+type IHTMLElement struct {
+	LpVtbl *IHTMLElementVtbl
+}
+
+func (this *IHTMLElement) Get_innerHTML(c **uint16 /*BSTR*/) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_innerHTML, 1,
+		uintptr(unsafe.Pointer(c)),
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+func (this *IHTMLElement) Put_innerHTML(c *uint16 /*BSTR*/) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_innerHTML, 1,
+		uintptr(unsafe.Pointer(c)),
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+func (this *IHTMLElement) Get_innerText(c **uint16 /*BSTR*/) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_innerText, 1,
+		uintptr(unsafe.Pointer(c)),
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+func (this *IHTMLElement) Put_innerText(c *uint16 /*BSTR*/) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_innerText, 1,
+		uintptr(unsafe.Pointer(c)),
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+func (this *IHTMLElement) Get_outerText(c **uint16 /*BSTR*/) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Get_outerText, 1,
+		uintptr(unsafe.Pointer(c)),
+		0, 0)
+
+	return HRESULT(ret)
+}
+
+func (this *IHTMLElement) Put_outerText(c *uint16 /*BSTR*/) HRESULT {
+	ret, _, _ := syscall.Syscall(this.LpVtbl.Put_outerText, 1,
+		uintptr(unsafe.Pointer(c)),
+		0, 0)
+
+	return HRESULT(ret)
+}
