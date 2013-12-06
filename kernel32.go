@@ -73,6 +73,7 @@ var (
 	setLastError           uintptr
 	systemTimeToFileTime   uintptr
 	getProfileString       uintptr
+	getModuleFileName      uintptr
 )
 
 type (
@@ -132,6 +133,7 @@ func init() {
 	mulDiv = MustGetProcAddress(libkernel32, "MulDiv")
 	setLastError = MustGetProcAddress(libkernel32, "SetLastError")
 	systemTimeToFileTime = MustGetProcAddress(libkernel32, "SystemTimeToFileTime")
+	getModuleFileName = MustGetProcAddress(libkernel32, "GetModuleFileNameW")
 
 }
 
@@ -298,4 +300,13 @@ func SystemTimeToFileTime(lpSystemTime *SYSTEMTIME, lpFileTime *FILETIME) bool {
 		0)
 
 	return ret != 0
+}
+
+func GetModuleFileName(moduleInstance HINSTANCE, lpFilename []uint16, nSize int) int {
+	ret, _, _ := syscall.Syscall(getModuleFileName, 3,
+		uintptr(unsafe.Pointer(moduleInstance)),
+		uintptr(unsafe.Pointer(&lpFilename[0])),
+		uintptr(nSize))
+
+	return int(ret)
 }
