@@ -1471,6 +1471,7 @@ var (
 	getSysColorBrush           uintptr
 	getSystemMetrics           uintptr
 	getWindow                  uintptr
+	getDesktopWindow           uintptr
 	getWindowLong              uintptr
 	getWindowLongPtr           uintptr
 	getWindowPlacement         uintptr
@@ -1666,6 +1667,7 @@ func init() {
 	keybdEvent = MustGetProcAddress(libuser32, "keybd_event")
 	mapVirtualKey = MustGetProcAddress(libuser32, "MapVirtualKeyW")
 	switchToThisWindow = MustGetProcAddress(libuser32, "SwitchToThisWindow")
+	getDesktopWindow = MustGetProcAddress(libuser32, "GetDesktopWindow")
 }
 
 func AdjustWindowRect(lpRect *RECT, dwStyle uint32, bMenu bool) bool {
@@ -2157,6 +2159,15 @@ func GetSystemMetrics(nIndex int32) int32 {
 		0)
 
 	return int32(ret)
+}
+
+func GetDesktopWindow() HWND {
+	ret, _, _ := syscall.Syscall(getDesktopWindow, 0,
+		0,
+		0,
+		0)
+
+	return HWND(ret)
 }
 
 func GetWindow(hWnd HWND, uCmd uint32) HWND {
